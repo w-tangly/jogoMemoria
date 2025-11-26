@@ -1,0 +1,199 @@
+body {
+    font-family: 'Clash Royale', sans-serif; /* Idealmente, usaria a fonte do jogo */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    background-image: url('./img/Pvzgw2-backyard-battleground.webp'); /* Fundo temático */
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: white;
+    text-shadow: 2px 2px 4px black;
+    overflow: hidden; /* Para evitar scroll */
+}
+
+.game-container {
+    background-color: transparent; /* Fundo mais escuro */
+    padding: 30px 40px;
+    border-radius: 20px;
+    /* box-shadow: 0 0 30px rgba(80, 80, 80, 0.9); Brilho dourado mais intenso */
+    text-align: center;
+    border: 3px solid transparent; /* Borda dourada sólida */
+    opacity: 100%;
+}
+
+h1 {
+    margin-bottom: 25px;
+    color: #f1f1f1;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 2.5em;
+}
+
+/* Grids para os níveis */
+#game-board.board-facil {
+    display: grid;
+    grid-template-columns: repeat(4, 120px); /* Cartas um pouco maiores */
+    grid-template-rows: repeat(3, 120px);
+    gap: 12px;
+    margin: 25px auto;
+    perspective: 1000px; /* Para melhor efeito 3D */
+    justify-content: center;
+}
+
+/* Adicione aqui os estilos para .board-medio e .board-dificil */
+#game-board.board-medio {
+    grid-template-columns: repeat(5, 100px);
+    grid-template-rows: repeat(4, 100px);
+    gap: 10px;
+}
+
+#game-board.board-dificil {
+    grid-template-columns: repeat(6, 80px);
+    grid-template-rows: repeat(6, 80px);
+    gap: 8px;
+}
+
+
+.card {
+    width: 100%; /* Ocupa 100% do grid cell */
+    height: 100%;
+    background-color: transparent; /* A cor será dada pelas faces */
+    border: none; /* A borda será na face */
+    border-radius: 12px; /* Bordas mais suaves */
+    cursor: pointer;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55); /* Transição elástica */
+}
+
+.card-inner {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    transform-style: preserve-3d;
+    transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55); /* Mesma transição para o giro */
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.6); /* Sombra mais pronunciada */
+    border-radius: 12px;
+}
+
+.card.flipped .card-inner {
+    transform: rotateY(180deg);
+}
+
+.card-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    overflow: hidden; /* Garante que a imagem não saia da borda */
+    border: 3px solid #033768; /* Borda dourada em todas as faces */
+}
+
+.card-back {
+    background: linear-gradient(135deg, #007bff, #0056b3); /* Gradiente azul */
+    color: white;
+    transform: rotateY(0deg);
+    font-size: 60px; /* Tamanho da coroa */
+    display: flex; /* Para centralizar a coroa */
+    justify-content: center;
+    align-items: center;
+    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.5); /* Sombra interna */
+}
+
+.card-back::before {
+    content: '🌱'; /* Coroa no verso da carta */
+    position: absolute;
+}
+
+.card-front {
+    background-color: #f0f0f0;
+    transform: rotateY(180deg);
+}
+
+.card-front img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Garante que a imagem cubra a área sem distorcer */
+    border-radius: 7px; /* Bordas arredondadas para a imagem */
+}
+
+/* Estilo para cartas que já foram encontradas */
+.card.matched .card-inner {
+    transform: rotateY(180deg);
+    border-color: #4CAF50; /* Borda verde */
+    box-shadow: 0 0 20px rgba(76, 175, 80, 0.8); /* Brilho verde */
+    pointer-events: none;
+    opacity: 1;
+    transform: scale(0.95); /* Levemente menor quando encontrado */
+}
+
+button {
+    padding: 12px 25px;
+    margin: 15px 10px; /* Para múltiplos botões de nível */
+    font-size: 1.1em;
+    background-color: #4CAF50; /* Verde */
+    color: white;
+    border: 2px solid #388E3C;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    font-weight: bold;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+button:hover {
+    background-color: #5cb85c;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+}
+
+.message {
+    margin-top: 20px;
+    font-size: 1.3em;
+    font-weight: bold;
+    min-height: 30px;
+    color: #ffcc00;
+}
+
+@keyframes pulse-green {
+    0% { box-shadow: 0 0 5px rgba(76, 175, 80, 0.5); }
+    50% { box-shadow: 0 0 25px rgba(76, 175, 80, 1); }
+    100% { box-shadow: 0 0 5px rgba(76, 175, 80, 0.5); }
+}
+
+.card.matched.animate-match .card-inner {
+    animation: pulse-green 1s ease-in-out;
+}
+.card.matched .card-front {
+    border: 3px solid #007bff; /* Borda azul */
+    box-shadow: 0 0 15px rgba(0, 123, 255, 0.8), inset 0 0 10px rgba(0, 123, 255, 0.5);
+}
+
+#game-board.board-medio {
+    display: grid;
+    grid-template-columns: repeat(5, 100px); /* 5 colunas */
+    grid-template-rows: repeat(4, 100px);    /* 4 linhas */
+    gap: 10px;
+    margin: 25px auto;
+    perspective: 1000px;
+    justify-content: center;
+}
+
+/* NOVO: Nível Difícil (18 Pares / 36 Cartas) */
+#game-board.board-dificil {
+    display: grid;
+    grid-template-columns: repeat(6, 80px); /* 6 colunas */
+    grid-template-rows: repeat(6, 80px);    /* 6 linhas */
+    gap: 8px;
+    margin: 25px auto;
+    perspective: 1000px;
+    justify-content: center;
+}
